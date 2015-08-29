@@ -65,4 +65,4 @@ $ ssh -l hyx 192.168.0.103
 （3）~/.profile中增加两行分别为：export LANG=&#8221;zh\_CN.UTF-8&#8243;和export LC\_ALL=&#8221;zh_CN.UTF-8&#8243;，执行.profile
 
 （4）在SecureCRT里设置，见下图  
-<img class="alignnone size-full wp-image-584" title="http_imgload" src="http://blog.cnsystem.org/wp-content/uploads/2011/09/http_imgload.png" alt="" width="670" height="339" />
+<img class="alignnone size-full wp-image-584" title="http_imgload" src="../wp-content/uploads/2011/09/http_imgload.png" alt="" width="670" height="339" />
