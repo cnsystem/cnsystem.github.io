@@ -1,3 +1,28 @@
+markdown: redcarpet
+permalink: /:title.html
 url: http://blog.cnsystem.org
-name: Just a dream
-description: do what I want
+lsi: true
+highlighter: true
+safe: true
+auto: true
+
+# presonal config
+title: Just Do it
+feed: 
+comments: disqus
+
+author:
+  name: billy.zheng
+  nickname: cnsystem
+  gmail: billyzheng1990@gmail.com
+  qqmail: 
+  qqlist: 
+  site: 
+
+seo: 
+  keyword: billyzheng,cnsystem
+  description: 
+config:
+  js_dir:
+  img_dir:
+  css_dir:
