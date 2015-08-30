@@ -40,5 +40,4 @@ cnsystem是我2年前为自己取的网名，那个时候我才开始编程一�
 </h3>
 
 微 博：cnsystem (<a title="cnsystem's新浪微博" href="http://weibo.com/cnsystem?s=6cm7D0" target="_blank">click to follow</a>)  
-QQ ：595188125  
 EMAIL：cnsystem@yeah.net
