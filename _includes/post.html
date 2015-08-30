@@ -13,10 +13,10 @@
 				{% if page.previous %}
 				<div><strong>上一篇： <a href="{{ site.url }}{{ page.previous.url }}" title="{{ page.previous.title }}">{{ page.previous.title }}</a></strong></div>
 				{% else %}
-				<div><strong>下一篇： NULL</strong></div>
+				<div><strong>上一篇： NULL</strong></div>
 				{% endif %}
 				{% if page.next %}
-				<div><strong>上一篇： <a href="{{ site.url }}{{ page.next.url }}" title="{{ page.next.title }}">{{ page.next.title }}</a></strong></div>
+				<div><strong>下一篇： <a href="{{ site.url }}{{ page.next.url }}" title="{{ page.next.title }}">{{ page.next.title }}</a></strong></div>
 				{% else %}
 				<div><strong>下一篇： NULL</strong></div>
 				{% endif %}
