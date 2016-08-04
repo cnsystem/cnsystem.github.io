@@ -151,7 +151,7 @@ position:relative;
 table-layout:fixed;
 word-break:break-all;
 margin:0 auto;
-width:930px;
+width:100%;
 min-height:300px;
 display:inline-block;
 padding:0 5px 0 5px;
