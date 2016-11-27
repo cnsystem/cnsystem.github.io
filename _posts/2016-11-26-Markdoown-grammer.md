@@ -1,8 +1,17 @@
-﻿# Markdoown 语法
+﻿---
+title: Markdoown 语法
+author: cnsystem
+layout: post
+permalink: /markdown-grammar.html
+categories:
+  - Other
+tags:
+  - 图形学
+  - markdown
+---
 
-> 段落引用
+# Markdoown 语法
 
-tags： markdown
 
 ---
 ## 1. 基本语法
