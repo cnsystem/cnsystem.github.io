@@ -2,7 +2,7 @@ markdown: kramdown
 permalink: /:title.html
 url: http://blog.cnsystem.org
 lsi: true
-highlighter: true
+highlighter: rouge
 safe: true
 auto: true
 
