@@ -36,8 +36,8 @@ DoubanApi.prototype.parse_json = function(json) {
 	$.each(json.entry,function(i,item) {
 		var link = {};
 		link.title = item["db:subject"]["title"]["$t"];
-		link.link = item["db:subject"]["link"][1]["@href"];	//硬编码
-		link.src = item["db:subject"]["link"][2]["@href"];	//硬编码
+		link.link = item["db:subject"]["link"][1]["@href"].replace("http://", "https://");	//硬编码
+		link.src = item["db:subject"]["link"][2]["@href"].replace("http://", "https://");	//硬编码
 		items.push(link);
 	});
 	return items;
