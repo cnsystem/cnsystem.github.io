@@ -1,3 +1,5 @@
+var indexHref = 0;
+var scriptLoadImage = "";
 function DoubanApi() {
 	this.defaults = {
 		place:"douban",
@@ -23,10 +25,13 @@ DoubanApi.prototype.make_api_url = function(type,user,key,status,begin,end) {
 DoubanApi.prototype.make_list_item = function(items) {
 	var html = '';
 	$.each(items,function(i,item){
-		html += '<li><a href="'
-			+ item.link + '" target="_blank"><img src="'
-			+ item.src + '" alt="' + item.title
-			+ '" title="' + item.title + '" /></a></li>';
+		html += '<li>';
+		html += '<a id="book_'+indexHref+'" href="' + item.link + '" target="_blank">';
+		html += '<img src="' + item.src + '" alt="' + item.title + '" title="' + item.title + '" />';
+		html += '</a>';
+		html += '</li>';
+		scriptLoadImage += 'document.getElementById("book_'+indexHref+'").innerHTML = ReferrerKiller.imageHtml("'+item.src+ '", {"width":"70px", "height":"100px"});';
+		indexHref++;
 	});
 	return html;
 };
@@ -95,6 +100,7 @@ DoubanApi.prototype.all_url = function(type,status,begin,end) {
 				$('<div class="clear"></div>').appendTo(mainplace);
 			}
 			$("#" + type + status + " > ul").append(this.make_list_item(this.parse_json(json)));
+			//eval(scriptLoadImage);
 		};
 	}
 	return this.make_api_url(type,this.defaults.user,this.defaults.api,status,begin,end);
