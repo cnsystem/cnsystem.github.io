@@ -105,7 +105,7 @@ categories:
 
 进程在系统中以进程实体（Process Image）出现，其中进程控制块是进程管理和进程调度的主要部分，进程控制块又描述了进程占有的资源：内存、文件、设备。操作系统中进程实体和资源关系如图5所示。
 
-<div id="attachment_783" style="width: 440px" class="wp-caption aligncenter">
+<div id="attachment_783" style="width: 640px" class="wp-caption aligncenter">
   <a href="http://blog.cnsystem.org/wp-content/uploads/2012/04/操作系统控制结构.jpg" target="_blank"><img class=" wp-image-783  " title="进程与资源" src="http://blog.cnsystem.org/wp-content/uploads/2012/04/操作系统控制结构-1024x481.jpg" alt="进程与资源" width="430" height="202" /></a>
   
   <p class="wp-caption-text">
