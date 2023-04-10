@@ -1,6 +1,6 @@
 markdown: kramdown
 permalink: /:title.html
-url: https://blog.cnsystem.org
+url: https://blog.billyz.top
 lsi: true
 highlighter: rouge
 safe: true
