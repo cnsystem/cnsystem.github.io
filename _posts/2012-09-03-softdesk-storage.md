@@ -10,69 +10,10 @@ categories:
 磁盘按层次分为磁面、磁道、扇区。扇区是磁盘的最小存储单位，一个扇区有512B大小，BIOS有的13H中断02号功能提供读取磁盘功能，03号功能提供写磁盘功能。
 
 表4.1 13H中断02号功能
-<table>
-<tbody>
-  <tr>
-    <td valign="center" width="113">
-      中断号
-    </td>
-    
-    <td valign="top" width="108">
-      功能号(AH)
-    </td>
-    
-    <td width="116">
-      入口参数
-    </td>
-    
-    <td width="123">
-      出口参数
-    </td>
-    
-    <td valign="center" width="99">
-      作用
-    </td>
-  </tr>
-    
-  <tr>
-    <td rowspan="2" width="113">
-      13H
-    </td>
-    
-    <td width="108">
-      02H
-    </td>
-    
-    <td valign="top" width="116">
-      <p>AL=扇区数DH=磁头号</p> 
-      <p>CH=柱面号</p>
-      <p>CL=扇区号</p>
-      <p>DL=驱动器号</p>
-      <p>ES:BX=缓冲区地址</p>
-    </td> 
-        
-    <td valign="top" width="123">
-          CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码
-    </td>
-        
-    <td valign="center" width="99">
-          读取指定的扇区到缓冲区
-    </td>
-  </tr> 
-  <tr>
-    <td valign="center" width="108"> 03H</td>
-    <td valign="top" width="116">
-	<p>AL=扇区数DH=磁头号</p> 
-        <p>CH=柱面号</p>
-	<p>CL=扇区号</p>
-        <p>DL=驱动器号</p>
-        <p>ES:BX=缓冲区地址</p>
-    </td> 
-    <td width="123">CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码</td>
-    <td valign="center" width="99">把缓冲区数据写入到指定扇区</td>
-  </tr>
-</tbody>
-</table> 
+|中断号 |功能号(AH) |入口参数 |出口参数 |作用 |
+|----- |----- |----- |----- |----- |
+| 13H | 02H | AL=扇区数,DH=磁头号,CH=柱面号,CL=扇区号,DL=驱动器号,ES:BX=缓冲区地址|CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码 | 读取指定的扇区到缓冲区 |
+| 13H | 03H |AL=扇区数,DH=磁头号,CH=柱面号,CL=扇区号,DL=驱动器号,ES:BX=缓冲区地址|CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码|把缓冲区数据写入到指定扇区|
 
 对于，对于1.44MB的软盘来说，一共有两个磁面，每个磁面有80个磁道，每个磁道有18个扇区。即2*80*18*512=1.44MB。其磁头、柱面、扇区号的计算方法，如图4-1所示。
 
