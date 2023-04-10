@@ -23,7 +23,7 @@ categories:
 那么“运行中的程序”就是进程，所以进程概念的提出是实现了在单核计算机里并发运行多个程序。<span style="color: #ff0000;">进程是在系统中能独立运行并作为资源资源分配的基本单位。</span>进程是运行中的程序，一个活动的实体，它包含程序的指令、数据、堆栈以及一些寄存器的值。而与之对应一个概念“程序”，我们可以理解为静态的二进制（或其它中间语言）的代码和数据。当程序被调入内存后，即程序运行后，就成了进程，被操作系统所调度、管理。
 
 <div id="attachment_769" style="width: 490px" class="wp-caption aligncenter">
-  <a href="http://blog.cnsystem.org/wp-content/uploads/2012/04/进程与程序.jpg"><img class=" wp-image-769 " title="进程与程序关系" src="http://blog.cnsystem.org/wp-content/uploads/2012/04/进程与程序.jpg" alt="进程与程序关系" width="480" height="135" /></a>
+  <a href="../wp-content/uploads/2012/04/进程与程序.jpg"><img class=" wp-image-769 " title="进程与程序关系" src="../wp-content/uploads/2012/04/进程与程序.jpg" alt="进程与程序关系" width="480" height="135" /></a>
   
   <p class="wp-caption-text">
     图1 进程与程序关系
@@ -34,7 +34,7 @@ categories:
 处理器在一个时间片里只能有一个进程在运行，其它的进程都处于等调度状态中。那么进程就有状态，最简单的二状态模型，如图2所示。
 
 <div id="attachment_775" style="width: 494px" class="wp-caption aligncenter">
-  <a href="http://blog.cnsystem.org/wp-content/uploads/2012/04/二状态模型.jpg"><img class=" wp-image-775 " title="二状态模型" src="http://blog.cnsystem.org/wp-content/uploads/2012/04/二状态模型.jpg" alt="二状态模型" width="484" height="220" /></a>
+  <a href="../wp-content/uploads/2012/04/二状态模型.jpg"><img class=" wp-image-775 " title="二状态模型" src="../wp-content/uploads/2012/04/二状态模型.jpg" alt="二状态模型" width="484" height="220" /></a>
   
   <p class="wp-caption-text">
     图2 二状态模型
@@ -46,7 +46,7 @@ categories:
 对于待调度状态的进程，操作系统得有一个数据结构将其组织进行调度。所有待调度的进程组成了一队列，进程队列，如图3所示。
 
 <div id="attachment_777" style="width: 540px" class="wp-caption aligncenter">
-  <a href="http://blog.cnsystem.org/wp-content/uploads/2012/04/二模型进程队列.jpg"><img class=" wp-image-777 " title="二模型进程队列" src="http://blog.cnsystem.org/wp-content/uploads/2012/04/二模型进程队列.jpg" alt="二模型进程队列" width="530" height="128" /></a>
+  <a href="../wp-content/uploads/2012/04/二模型进程队列.jpg"><img class=" wp-image-777 " title="二模型进程队列" src="../wp-content/uploads/2012/04/二模型进程队列.jpg" alt="二模型进程队列" width="530" height="128" /></a>
   
   <p class="wp-caption-text">
     图3 二状态进程队列
@@ -56,7 +56,7 @@ categories:
 为了使操作系统具有更好的性能，在二状态模型基础上，一种更为稍复杂的五状态模型被提了出来，如图4所示。
 
 <div id="attachment_778" style="width: 655px" class="wp-caption aligncenter">
-  <a href="http://blog.cnsystem.org/wp-content/uploads/2012/04/五状态模型.jpg" target="_blank"><img class=" wp-image-778 " title="五状态模型" src="http://blog.cnsystem.org/wp-content/uploads/2012/04/五状态模型.jpg" alt="五状态模型" width="645" height="209" /></a>
+  <a href="../wp-content/uploads/2012/04/五状态模型.jpg" target="_blank"><img class=" wp-image-778 " title="五状态模型" src="../wp-content/uploads/2012/04/五状态模型.jpg" alt="五状态模型" width="645" height="209" /></a>
   
   <p class="wp-caption-text">
     图4 五状态模型
@@ -106,7 +106,7 @@ categories:
 进程在系统中以进程实体（Process Image）出现，其中进程控制块是进程管理和进程调度的主要部分，进程控制块又描述了进程占有的资源：内存、文件、设备。操作系统中进程实体和资源关系如图5所示。
 
 <div id="attachment_783" style="width: 640px" class="wp-caption aligncenter">
-  <a href="http://blog.cnsystem.org/wp-content/uploads/2012/04/操作系统控制结构.jpg" target="_blank"><img class=" wp-image-783  " title="进程与资源" src="http://blog.cnsystem.org/wp-content/uploads/2012/04/操作系统控制结构-1024x481.jpg" alt="进程与资源" width="430" height="202" /></a>
+  <a href="../wp-content/uploads/2012/04/操作系统控制结构.jpg" target="_blank"><img class=" wp-image-783  " title="进程与资源" src="../wp-content/uploads/2012/04/操作系统控制结构-1024x481.jpg" alt="进程与资源" width="430" height="202" /></a>
   
   <p class="wp-caption-text">
     图5 进程与资源
