@@ -10,7 +10,8 @@ categories:
 磁盘按层次分为磁面、磁道、扇区。扇区是磁盘的最小存储单位，一个扇区有512B大小，BIOS有的13H中断02号功能提供读取磁盘功能，03号功能提供写磁盘功能。
 
 表4.1 13H中断02号功能
-<table border='1'>
+<table>
+<tbody>
   <tr>
     <td rowspan="2" valign="center" width="113">
       中断号
@@ -49,61 +50,37 @@ categories:
     </td>
     
     <td valign="top" width="116">
-      AL=扇区数DH=磁头号</p> 
-      
-      <p>
-        CH=柱面号
-      </p>
-      
-      <p>
-        CL=扇区号
-      </p>
-      
-      <p>
-        DL=驱动器号
-      </p>
-      
-      <p>
-        ES:BX=缓冲区地址</td> 
+      <p>AL=扇区数DH=磁头号</p> 
+      <p>CH=柱面号</p>
+      <p>CL=扇区号</p>
+      <p>DL=驱动器号</p>
+      <p>ES:BX=缓冲区地址</p>
+    </td> 
         
-        <td valign="top" width="123">
+    <td valign="top" width="123">
           CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码
-        </td>
+    </td>
         
-        <td valign="center" width="99">
+    <td valign="center" width="99">
           读取指定的扇区到缓冲区
-        </td></tr> 
-        
-        <tr>
-          <td valign="center" width="108">
-            03H
-          </td>
-          
-          <td valign="top" width="116">
-            AL=扇区数DH=磁头号</p> 
-            
-            <p>
-              CH=柱面号
-            </p>
-            
-            <p>
-              CL=扇区号
-            </p>
-            
-            <p>
-              DL=驱动器号
-            </p>
-            
-            <p>
-              ES:BX=缓冲区地址</td> 
-              
-              <td valign="top" width="123">
+    </td>
+  </tr> 
+  <tr>
+    <td valign="center" width="108"> 03H</td>
+    <td valign="top" width="116">
+	<p>AL=扇区数DH=磁头号</p> 
+        <p>CH=柱面号</p>
+	<p>CL=扇区号</p>
+        <p>DL=驱动器号</p>
+        <p>ES:BX=缓冲区地址</p>
+    </td> 
+    <td valign="top" width="123">
                 CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码
-              </td>
-              
-              <td valign="center" width="99">
-                把缓冲区数据写入到指定扇区
-              </td></tr> </tbody> </table> 
+    </td>
+    <td valign="center" width="99">把缓冲区数据写入到指定扇区</td>
+  </tr>
+</tbody>
+</table> 
 
 对于，对于1.44MB的软盘来说，一共有两个磁面，每个磁面有80个磁道，每个磁道有18个扇区。即2*80*18*512=1.44MB。其磁头、柱面、扇区号的计算方法，如图4-1所示。
 
