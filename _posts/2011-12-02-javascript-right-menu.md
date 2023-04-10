@@ -8,7 +8,8 @@ categories:
 ---
 JAVASCRIPT代码
 
-<pre class="brush:javascript" lang="javascript">var $G = function (id) {
+```javascript
+var $G = function (id) {
     if (typeof id === "string")
         return document.getElementById(id);
     else
@@ -60,16 +61,18 @@ function LoadMenu(con) {
     document.onclick = function () {
         config.hiddenMenu(menu);
     };
-}</pre>
+}
+```
 
-&nbsp;
+
 
 HTML代码
 
-<pre class="brush:html" lang="HTML">&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
-&lt;head runat="server"&gt;
-    &lt;title&gt;Index&lt;/title&gt;
-    &lt;style&gt;
+```html
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Index</title>
+    <style>
         *{margin:0;padding:0;}
         .div_RightMenu
         {
@@ -108,37 +111,37 @@ HTML代码
             filter:alpha(opacity=0.7);
             opacity:0.5;
         }
-    &lt;/style&gt;
-&lt;/head&gt;
-&lt;body style="position: relative"&gt;
-    &lt;div id="div_RightMenu" class="div_RightMenu"&gt;
-            &lt;div class="divMenuItem"&gt;
-                我的首页&lt;/div&gt;
-            &lt;div class="divMenuItem"&gt;
-                删除记录&lt;/div&gt;
-            &lt;div class="divMenuItem"&gt;
-                详细信息&lt;/div&gt;
-            &lt;div class="divMenuItem"&gt;
-                刷新&lt;/div&gt;
-            &lt;hr&gt;
-            &lt;div class="divMenuItem"&gt;
-                加入收藏夹&lt;/div&gt;
-            &lt;div class="divMenuItem"&gt;
-                复制&lt;/div&gt;
-            &lt;div class="divMenuItem"&gt;
-                全选&lt;/div&gt;
-            &lt;hr&gt;
-            &lt;div class="divMenuItem"&gt;
-                联系作者&lt;/div&gt;
-            &lt;div class="divMenuItem"&gt;
-                关于此功能&lt;/div&gt;
-            &lt;div class="divMenuItem" style="margin-bottom: 0px;"&gt;
-                属性&lt;/div&gt;
-        &lt;/div&gt;
-    &lt;div id="mask" class="mask"&gt;
-        &lt;div style=" background-color:Blue;"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div&gt;
+    </style>
+</head>
+<body style="position: relative">
+    <div id="div_RightMenu" class="div_RightMenu">
+            <div class="divMenuItem">
+                我的首页</div>
+            <div class="divMenuItem">
+                删除记录</div>
+            <div class="divMenuItem">
+                详细信息</div>
+            <div class="divMenuItem">
+                刷新</div>
+            <hr>
+            <div class="divMenuItem">
+                加入收藏夹</div>
+            <div class="divMenuItem">
+                复制</div>
+            <div class="divMenuItem">
+                全选</div>
+            <hr>
+            <div class="divMenuItem">
+                联系作者</div>
+            <div class="divMenuItem">
+                关于此功能</div>
+            <div class="divMenuItem" style="margin-bottom: 0px;">
+                属性</div>
+        </div>
+    <div id="mask" class="mask">
+        <div style=" background-color:Blue;"></div>
+    </div>
+    <div>
         心上十八添一目,
         单身贵族尔相思.
         春来人去无日月,
@@ -148,12 +151,12 @@ HTML代码
         有人为伍吾口多,
         两人共枕非夫妻.
               猜8个字
-    &lt;/div&gt;
-&lt;/body&gt;
-&lt;script src="../../Scripts/showMenu.js"&gt;&lt;/script&gt;
-    &lt;script&gt;
+    </div>
+</body>
+<script src="../../Scripts/showMenu.js"></script>
+    <script>
         LoadMenu({});
-    &lt;/script&gt;
-&lt;/html&gt;</pre>
+    </script>
+</html>
 
-&nbsp;
+```
