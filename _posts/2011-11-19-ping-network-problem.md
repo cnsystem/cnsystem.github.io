@@ -14,7 +14,7 @@ tags:
 先看一张图片：
 
 <div id="attachment_633" style="width: 590px" class="wp-caption alignnone">
-  <a href="http://blog.cnsystem.org/wp-content/uploads/2011/11/ttl.jpg"><img class="size-full wp-image-633" title="ping" src="http://blog.cnsystem.org/wp-content/uploads/2011/11/ttl.jpg" alt="ping" width="580" /></a>
+  <a href="../wp-content/uploads/2011/11/ttl.jpg"><img class="size-full wp-image-633" title="ping" src="../wp-content/uploads/2011/11/ttl.jpg" alt="ping" width="580" /></a>
   
   <p class="wp-caption-text">
     ping mail.qq.com
