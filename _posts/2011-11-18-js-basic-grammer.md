@@ -26,13 +26,13 @@ JavaScript中函数没有重载。
 
 argument对象。在函数代码中，使用特殊对象argument，开发者可以无需指出参数名，也可访问它们。argument[0]访问第一个参数，argument[1]访问第二个。。。。如
 
-function alertArg(){
-
-var n=argument.length;
-
-for(var i=0;i<n;i++) alert(argument[i]);
-
+```javascript
+function alertArg() {
+  var n=argument.length;
+  for(var i=0;i<n;i++) 
+    alert(argument[i]);
 }
+```
 
 alertArg(&#8216;hello&#8217;,&#8217;zhengbo&#8217;)//&#8212;-将弹出&#8217;hello&#8217;消息框，然后再弹出&#8217;zhengbo&#8217;消息框。
 
@@ -48,7 +48,9 @@ var sayHi=new Function( name, &#8221; alert( \&#8221; hello, \&#8221; +name); &#
 
 这里函数sayHi是一个对象，也是一个引用类型变量，而sayHi引用函数的地址。既然sayHi是一个地址，自然可以做为参数。如
 
+```
 function callAnthorFn(fnArg,sName) { fnArg(sName); }
+```
 
 callAnthorFn(sayHi,&#8221;zhengbo&#8221;);//&#8211;输出hello,zhengbo
 
