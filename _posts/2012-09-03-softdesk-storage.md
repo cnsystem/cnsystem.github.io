@@ -31,21 +31,21 @@ categories:
       功能号(AH)
     </td>
     
-    <td valign="top" width="116">
+    <td width="116">
       入口参数
     </td>
     
-    <td valign="top" width="123">
+    <td width="123">
       出口参数
     </td>
   </tr>
   
   <tr>
-    <td rowspan="2" valign="center" width="113">
+    <td rowspan="2" width="113">
       13H
     </td>
     
-    <td valign="center" width="108">
+    <td width="108">
       02H
     </td>
     
@@ -74,9 +74,7 @@ categories:
         <p>DL=驱动器号</p>
         <p>ES:BX=缓冲区地址</p>
     </td> 
-    <td valign="top" width="123">
-                CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码
-    </td>
+    <td width="123">CF=0操作成功，AH=00H，AL=传输的扇区数；CF=1操作失败，AH=状态代码</td>
     <td valign="center" width="99">把缓冲区数据写入到指定扇区</td>
   </tr>
 </tbody>
