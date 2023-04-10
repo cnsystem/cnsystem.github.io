@@ -114,7 +114,7 @@ categories:
               </p>
               
               <div id="attachment_815" style="width: 566px" class="wp-caption aligncenter">
-                <a href="http://blog.cnsystem.org/wp-content/uploads/2012/09/图片1.png"><img class="size-full wp-image-815 " title="图4-1 扇区号计算方法" src="http://blog.cnsystem.org/wp-content/uploads/2012/09/图片1.png" alt="扇区号计算方法" width="556" height="235" /></a>
+                <a href="../wp-content/uploads/2012/09/图片1.png"><img class="size-full wp-image-815 " title="图4-1 扇区号计算方法" src="../wp-content/uploads/2012/09/图片1.png" alt="扇区号计算方法" width="556" height="235" /></a>
                 
                 <p class="wp-caption-text">
                   图4-1 扇区号计算方法
@@ -129,7 +129,8 @@ categories:
                 读取扇区函数read_sector代码：
               </p>
               
-              <pre class="syntaxhighlighter  Brush">;************************************************
+```asm
+;************************************************
 ;功    能：	read扇区
 ;入口参数：	保存在堆栈中，依次为
 ;		 	1.扇区号
@@ -174,4 +175,5 @@ read_sector:
 .done:
 	popa
 	pop bp
-	ret</pre>
+	ret
+```
