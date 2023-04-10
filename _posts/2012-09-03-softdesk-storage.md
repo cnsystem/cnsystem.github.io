@@ -13,20 +13,10 @@ categories:
 <table>
 <tbody>
   <tr>
-    <td rowspan="2" valign="center" width="113">
+    <td valign="center" width="113">
       中断号
     </td>
     
-    <td colspan="3" valign="top" width="347">
-      寄存器
-    </td>
-    
-    <td rowspan="2" valign="center" width="99">
-      作用
-    </td>
-  </tr>
-  
-  <tr>
     <td valign="top" width="108">
       功能号(AH)
     </td>
@@ -38,8 +28,12 @@ categories:
     <td width="123">
       出口参数
     </td>
+    
+    <td valign="center" width="99">
+      作用
+    </td>
   </tr>
-  
+    
   <tr>
     <td rowspan="2" width="113">
       13H
