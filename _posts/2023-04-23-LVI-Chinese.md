@@ -1,5 +1,13 @@
 # [译]LVI-SAM: Tightly-coupled Lidar-Visual-Inertial Odometryvia Smoothing and Mapping
 
+---
+title: [译]LVI-SAM: Tightly-coupled Lidar-Visual-Inertial Odometryvia Smoothing and Mapping
+author: cnsystem
+layout: post
+permalink: /LVI-Chinese.html
+categories:
+  - Papaer Reading
+---
 
 **摘要**——我们提出了一个通过平滑和映射实现紧密耦合的激光雷达-视觉-惯性测距技术的框架，称为LVI-SAM。LVI-SAM能够以高精度和强鲁棒性实时完成状态估计和地图构建。LVI-SAM建立在一个因子图上，并由两个子系统组成：一个是视觉-惯性系统（VIS），另一个是激光雷达-惯性系统（LIS）。这两个子系统以紧密耦合的方式设计，其中VIS利用LIS的估计结果以便进行初始化。
 
@@ -147,6 +155,7 @@ Handheld数据集是由操作员携带传感器组件在几个开放的田野中
 图9：使用Jackal和Handheld数据集的各种方法的轨迹。 绿色线条描绘了每种比较方法的结果轨迹。 作为基准的GPS定位测量用红点表示。 由于LOAM，LIO-mapping，LINS和LIO-SAM无法生成有意义的结果，因此没有显示它们的轨迹。
 
 表II：使用各种方法对Jackal和Handheld数据集进行定量比较。
+
  | Dataset | Error type | VINS(w/o loop) | VINS(w/ loop) | LOAM | LIO-mapping | LINS(w/o loop) | LINS(w/ loop) | LIO-SAM(w/o loop) | LIO-SAM(w/ loop) | LVI-SAM(w/o loop) | LVI-SAM(w/ loop) | 
  | -------- | ------------------ | ----- | ----- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ----- | 
  | Jackal   | RMSE w.r.t GPS (m) | 8.58  | 4.49  | 44.92 | 127.05 | 3.95 | 0.77 | 3.54  | 1.52 | 4.05 | 0.67  | 
@@ -172,8 +181,7 @@ Handheld数据集是由操作员携带传感器组件在几个开放的田野中
 
 #### [3] A. I. Mourikis and S. I. Roumeliotis, “A Multi-state Constraint KalmanFilter for Vision-aided Inertial Navigation,” IEEE International Conference on Robotics and Automation (ICRA), pp. 3565–3572, 2007.
 
-#### [4] M. Bloesch, S. Omari, M. Hutter, and R. Siegwart, “Robust VisualInertial Odometry using A Direct EKF-based Approach,” IEEE/RSJinternational conference on intelligent robots and systems (IROS), pp.
-298–304, 2015.
+#### [4] M. Bloesch, S. Omari, M. Hutter, and R. Siegwart, “Robust VisualInertial Odometry using A Direct EKF-based Approach,” IEEE/RSJinternational conference on intelligent robots and systems (IROS), pp.298–304, 2015.
 
 #### [5] P. Geneva, K. Eckenhoff, W. Lee, Y. Yang, and G. Huang, “OpenVINS:A Research Platform for Visual-Inertial Estimation,” IROS Workshopon Visual-Inertial Navigation: Challenges and Applications, 2019.
 
@@ -195,8 +203,7 @@ Handheld数据集是由操作员携带传感器组件在几个开放的田野中
 
 #### [14] C. Qin, H. Ye, C. E. Pranata, J. Han, S. Zhang, and M. Liu, “LINS:A Lidar-Inertial State Estimator for Robust and Efﬁcient Navigation,”IEEE International Conference on Robotics and Automation (ICRA),pp. 8899–8906, 2020.
 
-#### [15] C. Debeunne and D. Vivet, “A Review of Visual-LiDAR Fusion basedSimultaneous Localization and Mapping,” Sensors, vol. 20, no. 7, p.
-2068, 2020.
+#### [15] C. Debeunne and D. Vivet, “A Review of Visual-LiDAR Fusion basedSimultaneous Localization and Mapping,” Sensors, vol. 20, no. 7, p.2068, 2020.
 
 #### [16] J. Zhang and S. Singh, “Laser-Visual-Inertial Odometry and Mappingwith High Robustness and Low Drift,” Journal of Field Robotics,vol. 35, no. 8, pp. 1242–1264, 2018.
 
