@@ -5,10 +5,11 @@ layout: post
 permalink: /LVI-Chinese.html
 categories:
   - 论文翻译
- tags:
+tags:
   - SLAM
-  - paper
+  - paper reading
 ---
+
 
 **摘要**——我们提出了一个通过平滑和映射实现紧密耦合的激光雷达-视觉-惯性测距技术的框架，称为LVI-SAM。LVI-SAM能够以高精度和强鲁棒性实时完成状态估计和地图构建。LVI-SAM建立在一个因子图上，并由两个子系统组成：一个是视觉-惯性系统（VIS），另一个是激光雷达-惯性系统（LIS）。这两个子系统以紧密耦合的方式设计，其中VIS利用LIS的估计结果以便进行初始化。
 
