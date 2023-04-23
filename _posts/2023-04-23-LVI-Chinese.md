@@ -1,5 +1,5 @@
 ---
-title: 论文翻译LVI-SAM Tightly-coupled Lidar-Visual-Inertial Odometryvia Smoothing and Mapping
+title: 论文翻译LVI-SAM Tightly-coupled Lidar-Visual-Inertial Odometry via Smoothing and Mapping
 author: cnsystem
 layout: post
 permalink: /LVI-Chinese.html
