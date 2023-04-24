@@ -11,7 +11,7 @@ tags:
   - 网络
   - 路由
 ---
-在前面<a title="《PING解决上网问题》" href="http://blog.cnsystem.org/ping-network-problem.hml" target="_blank">《PING解决上网问题》</a>里说到了，用Ping命令解决无法上网问题，在回显的内容中有一项是TTL=53
+在前面<a title="《PING解决上网问题》" href="http://blog.billyz.top/ping-network-problem.hml" target="_blank">《PING解决上网问题》</a>里说到了，用Ping命令解决无法上网问题，在回显的内容中有一项是TTL=53
 
 那什么是TTL呢？Time To Live，存活时间。就是说一个IP报文在网络中传递的时间。为什么会有这个概念呢？有些情况下，目的地不可达的时候，例如某网站主机死掉了，用户发送的报文找不到目的地，但是总不能一直在网络里拼命的找吧，这样网络一定给挤爆。所以用TTL来将过期的报文给抛弃掉。但是TTL并不是时间，而与IP报文传输经过路由器的个数有关，IP报文有个初始的TTL值（下面会提到），然后没经过一个路由器减一，当TTL小于0的时候，该报文就被抛弃。
 
