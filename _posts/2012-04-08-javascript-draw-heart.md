@@ -10,15 +10,16 @@ categories:
 这里写了一段代码，本想实现用javascript画了一个函数图像。直接上代码：  
 <span style="color: #ff99cc;"><strong>***********************************华丽的分隔线***********************************</strong></span>
 
-<pre class="brush:php">&lt;html&gt;
-&lt;head&gt;
-&lt;title&gt;8023&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;/body&gt;
-&lt;script type="text/javascript"&gt;
+```html
+<html>
+<head>
+<title>8023</title>
+</head>
+<body>
+</body>
+<script type="text/javascript">
 var Each=function(data,func){
-	for(var i=0;i&lt;data.length;i++)
+	for(var i=0;i<data.length;i++)
 		func(data,i);
 };
 //画个函数图像
@@ -26,8 +27,8 @@ function drawSomething(width,height){
 	var backColor={'R':255,'G':255,'B':255};
 	var frontColor={'R':255,'G':0,'B':0};
 	var canvas=initialCanvas(width,height);	
-        //修正width,height
-        width=canvas.width;
+		//修正width,height
+		width=canvas.width;
 	height=canvas.height;
 	var g=canvas.getContext("2d");
 	var imgd;
@@ -40,10 +41,10 @@ function drawSomething(width,height){
 	}
 	imgd = g.getImageData(0, 0, width, height);
 	
-	var O={'x':width/2,'y':height/2}
+	var center={'x':width/2,'y':height/2}
 	//修改每一个像素，性能很差，将就实现一下啦
 	Each(imgd.data,function(data,index){
-		var position=GetPostion(index,width,height,O);
+		var position=GetPostion(index,width,height,center);
 		if(isInSide(position,width,height)){
 			setPix(data,index,frontColor);
 		}
@@ -80,16 +81,16 @@ function isInSide(position,width,height){
 	var y=position.y;
 	x=x*20.0/width/1.0;
 	y=y*20.0/height/1.0;
-	if(17*x*x-16*Math.abs(x)*y+7*y*y-225&lt;0)
+	if(17*x*x-16*Math.abs(x)*y+7*y*y-225<0)
 		return 1;
 	return 0;
 }
 //将索引转换为坐标
-//O为坐标原点位置，这里只考虑原点在canvas内部
+//center为坐标原点位置，这里只考虑原点在canvas内部
 //因为Y轴方向变了，转换不严密
-function GetPostion(index,width,height,O){
-	var y=(height-index/width)-O.y;
-	var x=index%width-O.x;
+function GetPostion(index,width,height,center){
+	var y = (height - index / width)- center.y;
+	var x = index % width- center.x;
 	return {'x':x,'y':y};
 }
 window.onload=function(){
@@ -97,10 +98,48 @@ window.onload=function(){
 	var height=48;
 	drawSomething(width,height);
 };
-&lt;/script&gt;
-&lt;/html&gt;</pre>
+</script>
+</html>
+```
 
 <span style="color: #ff99cc;"><strong>***********************************华丽的分隔线***********************************</strong></span>  
+
+<canvas id="_canvas" width='64' height='48px'> </canvas>
+<script>
+//画个函数图像
+function drawSomething(width,height){
+	var backColor={'R':255,'G':255,'B':255};
+	var frontColor={'R':255,'G':0,'B':0};
+	var canvas=document.getElementById("canvas");
+	//修正width,height
+	width=canvas.width;
+	height=canvas.height;
+	var g=canvas.getContext("2d");
+	var imgd;
+	if (g.createImageData) {
+		imgd = g.createImageData(width, height);
+	} else if (g.getImageData) {
+		imgd = g.getImageData(0, 0, width, height);
+	} else {
+		imgd = {'width' : width, 'height' : height, 'data' : new Array(width*height*4)};
+	}
+	imgd = g.getImageData(0, 0, width, height);
+	
+	var center={'x':width/2,'y':height/2};
+	//修改每一个像素，性能很差，将就实现一下啦
+	Each(imgd.data,function(data,index){
+		var position=GetPostion(index,width,height,center);
+		if(isInSide(position,width,height)){
+			setPix(data,index,frontColor);
+		}
+		else{
+			setPix(data,index,backColor);
+		}
+	});
+	g.putImageData(imgd,0,0);
+}
+</script>
+
 <span style="color: #ff0000;">哈哈，猜猜你能看到什么？<a href="http://html5.cnsystem.org/demo/javascript/draw-heart.html"  target="_blank">点击查看</a></span>  
 <span style="color: #ff99cc;"><strong>***********************************华丽的分隔线***********************************</strong></span>  
 这里要的做是用函数17x^2-16|x|y+17y^2-225=0来画一个心形  
@@ -110,5 +149,6 @@ window.onload=function(){
 
 1、函数来自matrix67博客： <a href="http://www.matrix67.com/blog/archives/2247" target="_blank">http://www.matrix67.com/blog/archives/2247</a>  
 2、HTML5 Canvas教程很详细的：<a href="http://blog.bingo929.com/html-5-canvas-the-basics-html5.html" target="_blank">http://blog.bingo929.com/html-5-canvas-the-basics-html5.html</a>  
+
 <span style="color: #ff99cc;"><strong>***********************************华丽的分隔线***********************************</strong></span>  
 PS：还要优化一下，坐标转换出了点问题，图像位置不对，画布设置大了一点就有问题

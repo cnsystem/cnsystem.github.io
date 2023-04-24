@@ -28,4 +28,4 @@ sftp>get \[remote\_file\] \[local\_diretory\]
   1. <a href="http://www.51cto.com/art/200712/62867.htm" target="_blank">Linux系统手动安装rzsz 软件包</a>：http://www.51cto.com/art/200712/62867.htm
   2. <a href="http://wenku.baidu.com/view/42054b878762caaedd33d48a.html" target="_blank">sftp使用</a>:http://wenku.baidu.com/view/42054b878762caaedd33d48a.html
 
-前一篇secureCRT的使用《<a href="http://blog.cnsystem.org/linux-remote-manage-console.html" target="_blank">远程管理Linux之命令界面</a>》
+前一篇secureCRT的使用《<a href="linux-remote-manage-console.html" target="_blank">远程管理Linux之命令界面</a>》
