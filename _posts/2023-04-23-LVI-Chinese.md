@@ -52,11 +52,13 @@ tags:
 
 图2: 我们的视觉惯性系统框架。该系统优化IMU预积分、没有深度信息的视觉测量和具有深度信息的视觉测量的残差。
 
-我们为我们的VIS（视觉惯性系统）采用了[7](#7-t-qin-p-li-and-s-shen-vins-mono-a-robust-and-versatilemonocular-visual-inertial-state-estimator-ieee-transactions-onrobotics-vol-34-no-4-pp-1004–1020-2018)的Pipeline，如图2所示。使用角点检测器[20](#20-j-shi-et-al-good-features-to-track-ieee-conference-on-computervision-and-pattern-recognition-pp-593–600-1994)检测视觉特征并通过Kanade-Lucas-Tomasi算法[21](#21-b-d-lucas-t-kanade-et-al-an-iterative-image-registrationtechnique-with-an-application-to-stereo-vision-1981)进行跟踪。在VIS初始化后，我们使用视觉里程计对激光雷达帧进行配准，并获取用于特征深度估计的稀疏深度图像。系统在滑动窗口设置下执行束调整，其中系统状态 **x ∈ X** 可以写成：
+我们为我们的VIS（视觉惯性系统）采用了[7](#7-t-qin-p-li-and-s-shen-vins-mono-a-robust-and-versatilemonocular-visual-inertial-state-estimator-ieee-transactions-onrobotics-vol-34-no-4-pp-1004–1020-2018)的Pipeline，如图2所示。使用角点检测器[20](#20-j-shi-et-al-good-features-to-track-ieee-conference-on-computervision-and-pattern-recognition-pp-593–600-1994)检测视觉特征并通过Kanade-Lucas-Tomasi算法[21](#21-b-d-lucas-t-kanade-et-al-an-iterative-image-registrationtechnique-with-an-application-to-stereo-vision-1981)进行跟踪。在VIS初始化后，我们使用视觉里程计对激光雷达帧进行配准，并获取用于特征深度估计的稀疏深度图像。系统在滑动窗口设置下执行束调整，其中系统状态 $x ∈ X$ 可以写成：
 
-**x = [ R, p, v, b ].**
+$$
+x = \left[R, p, v, b \right]
+$$
 
-**R ∈ SO(3)** 是旋转矩阵，**p ∈ $R^3$** 是位移向量，**v** 是速度，$b = [b_{a}，b_w]$ 是IMU偏差。$b_a$和$b_w$分别是加速度和角速度的偏差向量。从传感器体坐标系B到世界坐标系W的变换**T ∈ SE(3)** 表示为**T = [R|p]**。在接下来的几节中，我们将详细介绍如何改善VIS初始化和特征深度估计的过程。由于篇幅限制，我们将读者引用到[7]以获取更多细节，如残差的实现。
+$R ∈ SO \left( 3 \right)$ 是旋转矩阵，$p ∈ R^3$ 是位移向量，$v$ 是速度，$b = \left[b_{a}，b_w \right]$ 是IMU偏差。$b_a$和$b_w$分别是加速度和角速度的偏差向量。从传感器体坐标系B到世界坐标系W的变换 $T ∈ SE \left(3\right)$ 表示为 $T = \left[R|p \right]$。在接下来的几节中，我们将详细介绍如何改善VIS初始化和特征深度估计的过程。由于篇幅限制，我们将读者引用到[7]以获取更多细节，如残差的实现。
 
 1). **初始化**：基于优化的VIO通常由于在初始化时解决高度非线性问题而导致发散。初始化的质量严重依赖于两个因素：初始传感器运动和IMU参数的准确性。在实践中，我们发现[7]在传感器行驶速度较小或恒定时常常无法初始化。这是因为当加速度激励不够大时，度量尺度不可观测。IMU参数包括缓慢变化的偏置和白噪声，影响原始加速度和角速度测量。在初始化时这些参数的良好猜测有助于优化更快地收敛。
 

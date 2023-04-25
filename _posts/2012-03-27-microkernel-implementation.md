@@ -45,4 +45,4 @@ tags:
 
 <span style="color: #ff0000;">PS:本着毕业设计，并限于个人能力，以上内容仅供参考。此不涉及内容：文件系统，图形界面，设备驱动；基于386、单核心（single processor）、多任务（multi task)，输入输出仅限于键盘、显示器。</span>
 
- [1]: http://blog.cnsystem.org/easy-boot-section.html
+ [1]: http://blog.billyz.top/easy-boot-section.html
