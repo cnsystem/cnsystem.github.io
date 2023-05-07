@@ -10,7 +10,9 @@ tags:
   - paper reading
 ---
 
-**概要**:我们提出了一种通过平滑和映射实现激光惯性测距仪紧密耦合的姿态估计框架LIO-SAM,可以实时准确地估计移动机器人的运动轨迹和创建地图。LIO-SAM在因子图的基础上表述了激光惯性测距仪的姿态估计,允许从不同源头将大量的相对测量和绝对测量(包括闭环)作为因子引入系统。从惯性测量单元(IMU)预积分获得的运动估计消除点云的失真,并为激光测距仪姿态优化提供初值。获得的激光测距仪解决方案用于估计IMU的偏差。为确保实时高性能,我们边缘化旧的激光扫描以进行姿态优化,而不是将激光扫描与全局地图匹配。与全局尺度相比,局部尺度的扫描匹配显著提高了系统的实时性能,关键帧的选择性引入和高效的滑动窗口方法(将新关键帧注册到固定大小的“子关键帧”集)也是如此。提出的方法在不同尺度和环境下从三个平台收集的数据集上进行了广泛评估。 
+**概要**:
+
+我们提出了一种通过平滑和映射实现激光惯性测距仪紧密耦合的姿态估计框架LIO-SAM,可以实时准确地估计移动机器人的运动轨迹和创建地图。LIO-SAM在因子图的基础上表述了激光惯性测距仪的姿态估计,允许从不同源头将大量的相对测量和绝对测量(包括闭环)作为因子引入系统。从惯性测量单元(IMU)预积分获得的运动估计消除点云的失真,并为激光测距仪姿态优化提供初值。获得的激光测距仪解决方案用于估计IMU的偏差。为确保实时高性能,我们边缘化旧的激光扫描以进行姿态优化,而不是将激光扫描与全局地图匹配。与全局尺度相比,局部尺度的扫描匹配显著提高了系统的实时性能,关键帧的选择性引入和高效的滑动窗口方法(将新关键帧注册到固定大小的“子关键帧”集)也是如此。提出的方法在不同尺度和环境下从三个平台收集的数据集上进行了广泛评估。 
 
 ## I. INTRODUCTION
 
@@ -21,6 +23,7 @@ tags:
 在本文中,我们提出了一种通过平滑和映射实现激光惯性测距仪紧密耦合的姿态估计框架LIO-SAM,以解决上述问题。我们假设点云消失畸变的非线性运动模型,使用原始IMU测量估计激光扫描期间的传感器运动。除了消除点云畸变外,估计的运动还为激光测距仪姿态优化提供初值。然后,获得的激光测距仪解决方案用于在因子图中估计IMU的偏差。
 
 通过引入全局因子图进行机器人运动轨迹估计,我们可以高效地利用激光和IMU测量值进行传感器融合,在机器人姿态之间进行场景识别,并在可用时引入绝对测量值,如GPS定位和罗盘方位。这些来自各种来源的因子用于对图进行联合优化。此外,我们边缘化旧的激光扫描以进行姿态优化,而不是像LOAM那样将扫描与全局地图匹配。与全局尺度相比,局部尺度的扫描匹配显著提高了系统的实时性能,关键帧的选择性引入和高效的滑动窗口方法(将新关键帧注册到固定大小的“子关键帧”集)也是如此。我们工作的主要贡献可以总结如下:
+
 * 建立在因子图之上的紧密耦合的激光惯性测距仪框架,适用于多传感器融合和全局优化。
 * 一个高效的、基于局部滑动窗口的扫描匹配方法,通过选择性选择新关键帧并将其注册到固定大小的先验子关键帧集,实现实时性能。
 * 该框架在各种尺度、车辆和环境下进行了广泛验证。
@@ -39,9 +42,11 @@ tags:
 ### A. System Overview
 
 我们首先定义整篇论文中使用的坐标系和符号。我们用W表示世界坐标系,B表示机器人体坐标系。为了方便,我们还假设IMU坐标系与机器人体坐标系重合。机器人状态x可以写成:
+
 $$ 
 x = [R^T, p^T, v^T, b^T]^T (1)
 $$ 
+
 其中R ∈ SO(3)是旋转矩阵,p ∈ $R^3$ 是位置向量,v是速度,b是IMU偏差。从B到W的变换T ∈ SE(3)表示为T = [R | p]。
 
 ![Fig.1](../images/2023/04/LIO-SAM-Figure1.jpg)
@@ -49,54 +54,75 @@ $$
 Fig. 1: The system structure of LIO-SAM. The system receives input from a 3D lidar, an IMU and optionally a GPS. Four types of factorsare introduced to construct the factor graph.: (a) IMU preintegration factor, (b) lidar odometry factor, (c) GPS factor, and (d) loop closurefactor. The generation of these factors is discussed in Section III.
 
 该系统的概述如图1所示。该系统从3D激光雷达、IMU和可选的GPS接收传感器数据。我们的目标是利用这些传感器的观测值估计机器人的状态和其轨迹。这个状态估计问题可以表述为最大后验概率(MAP)问题。我们使用因子图来建模这个问题,因为与贝叶斯网相比,因子图更适合进行推理。假设高斯噪声模型,我们问题的MAP推理等同于求解非线性最小二乘问题[18]。
-注意,在不失一般性的前提下,该系统也可以纳入其他传感器的测量,如高度计的高度或罗盘的方位。我们为构建因子图引入四种因子类型和一种变量类型。这个变量代表机器人在特定时间的状态,被分配到图的节点。四种因子类型为:(a) IMU预积分因子,(b) 激光测距仪姿态因子,(c) GPS因子和(d) 闭环因子。当机器人姿态变化超过用户定义的阈值时,向图中添加新的机器人状态节点x。在插入新节点时,使用增量平滑和映射与贝叶斯树(iSAM2)[19]对因子图进行优化。
+注意,在不失一般性的前提下,该系统也可以纳入其他传感器的测量,如高度计的高度或罗盘的方位。我们为构建因子图引入四种因子类型和一种变量类型。这个变量代表机器人在特定时间的状态,被分配到图的节点。四种因子类型为:
+
+(a) IMU预积分因子,
+
+(b) 激光测距仪姿态因子
+
+(c) GPS因子
+
+(d) 闭环因子。
+
+当机器人姿态变化超过用户定义的阈值时,向图中添加新的机器人状态节点x。在插入新节点时,使用增量平滑和映射与贝叶斯树(iSAM2)[19]对因子图进行优化。
 生成这些因子的过程在以下各节中描述。
 
 ### B. IMU预积分因子
 
 IMU的角速度和加速度测量值使用公式2和3定义:
+
 $$
 \hat{w}_t = w_t + b^w_t + n^w_t (2) \\
 \hat{a}_t = R^{BW}_t(a_t - g) + b^a_t + n^a_t (3) 
 $$
-其中$\hat{w}_t$和$\hat{a}_t$是时刻t在**B**(Body)坐标系中的原始IMU测量值。$\hat{w}_t$和$\hat{a}_t$受缓慢变化的偏差$b_t$和白噪声$n_t$的影响。$R^{BW}_t$是从**W**（Wrold）坐标系到**B**（Body）坐标系的旋转矩阵。**g**是**W**（World）坐标系中的恒定重力向量。
+
+其中 $\hat{w}_t$ 和 $\hat{a}_t$ 是时刻t在**B**(Body)坐标系中的原始IMU测量值。$\hat{w}_t$ 和 $\hat{a}_t$ 受缓慢变化的偏差 $b_t$ 和白噪声 $n_t$ 的影响。$R^{BW}_t$ 是从**W**（Wrold）坐标系到**B**（Body）坐标系的旋转矩阵。**g**是**W**（World）坐标系中的恒定重力向量。
 我们现在可以使用IMU的测量值推断机器人的运动。机器人在时刻 $t + ∆t$ 的速度、位置和旋转可以计算如下:
-$$
-vt+∆t = vt + g∆t + Rt(\hat{a}_t − bat − nat )∆t(4) \\ 
-p_{t+∆t} = p_t + v_t∆t + \frac{1}{2}g∆t^2 + \frac{1}{2}R_t(\hat{a}_t − b^a_t − n^a_t )∆t^2(5) \\
-R_{t+∆t} = R_texp((\hat{w}_t - b^w_t - n^w_t )∆t),(6) 
-$$
-其中$ R_t = R^{WB}_t = R^{BW^T}_t $。这里我们假设B的角速度和加速度在上述积分期间保持不变。
-然后,我们应用[20]中提出的IMU预积分方法来获得两时间步之间的相对机体运动。在时刻i和j之间,预积分测量值$∆v_{ij}$、$∆p_{ij}$和$∆R_{ij}$可以使用下式计算:
-$$
-∆v_{ij} = R^T_i (v_j − v_i − g∆t_{ij})(7) \\  
-∆p_{ij} = R^T_i (p_j − p_i − v_i∆t_{ij} − \frac{1}{2}g∆t^2_{ij})(8) \\
-∆R_{ij} = R^T_i R_j.(9) 
-$$
+
+$$ v_{t+∆t} = v_t + g∆t + R_t(\hat{a}_t − b^a_t − n^a_t )∆t(4) $$
+
+$$ p_{t+∆t} = p_t + v_t∆t + \frac{1}{2}g∆t^2 + \frac{1}{2}R_t(\hat{a}_t − b^a_t − n^a_t )∆t^2(5) $$
+
+$$ R_{t+∆t} = R_texp((\hat{w}_t - b^w_t - n^w_t )∆t),(6) $$
+
+其中 
+
+$$R_t = R^{WB}_t = R^{BW^T}_t$$ 
+
+这里我们假设B的角速度和加速度在上述积分期间保持不变。
+然后,我们应用[20]中提出的IMU预积分方法来获得两时间步之间的相对机体运动。在时刻i和j之间,预积分测量值 $∆v_{ij}$ 、$∆p_{ij}$ 和 $∆R_{ij}$ 可以使用下式计算:
+
+$$∆v_{ij} = R^T_i (v_j − v_i − g∆t_{ij})   (7) $$
+$$∆p_{ij} = R^T_i (p_j − p_i − v_i∆t_{ij} − \frac{1}{2}g∆t^2_{ij})(8) $$
+$$∆R_{ij} = R^T_i R_j  (9)$$
+
 由于空间限制,我们引用[20]中的描述,详细推导公式7和9。除了效率高外,应用IMU预积分还自然地给我们带来一种约束——IMU预积分因子。IMU偏差与因子图中的激光测距仪因子一起联合优化
 
 ### C. 激光测距仪姿态因子 
 
-当接收到新激光扫描时,我们首先执行特征提取。通过评估局部区域内点的粗糙度来提取边缘和平面特征。粗糙度值较大的点被分类为边缘特征。类似地,由较小的粗糙度值被归类为平面特征。我们将在时刻i的激光扫描中提取的边缘和平面特征分别表示为 $F^e_i$ 和 $F^p_i$。
+当接收到新激光扫描时,我们首先执行特征提取。通过评估局部区域内点的粗糙度来提取边缘和平面特征。粗糙度值较大的点被分类为边缘特征。类似地，由较小的粗糙度值被归类为平面特征。我们将在时刻i的激光扫描中提取的边缘和平面特征分别表示为 $F^e_i$ 和 $F^p_i$。
 
-在时刻i提取的所有特征组成激光帧$F_i$,其中$F_i=\{F^e_i, F^p_i \}$。注意,一个激光帧F表示为**B**(Body)坐标系下。特征提取过程的更详细描述可以在[1]或[7]中找到(如果使用距离图像)。
+在时刻i提取的所有特征组成激光帧 $F_i$ ，其中 $F_i=\{F^e_i， F^p_i \}$ 。注意，一个激光帧F表示为**B**(Body)坐标系下。特征提取过程的更详细描述可以在[1]或[7]中找到(如果使用距离图像)。
 
-使用每个激光帧计算并添加因子到图中在计算上是不可行的,所以我们采用关键帧选择的概念,这在视觉SLAM领域广泛使用。使用简单但有效的启发法,当与前一状态$x_i$相比,机器人姿态的变化超过用户定义的阈值时,我们选择激光帧$F_{i+1}$作为关键帧。新保存的关键帧$F_{i+1}$与因子图中的新机器人状态节点$x_{i+1}$相关联。两个关键帧之间的激光帧被丢弃。这样添加关键帧不仅在地图密度和内存消耗之间达到平衡,而且有助于维持一个相对稀疏的因子图,这适合实时非线性优化。 
-在我们的工作中,添加新关键帧的位置和旋转变化阈值分别选择为1米和10°。 
+使用每个激光帧计算并添加因子到图中在计算上是不可行的，所以我们采用关键帧选择的概念，这在视觉SLAM领域广泛使用。使用简单但有效的启发法，当与前一状态$x_i$相比，机器人姿态的变化超过用户定义的阈值时，我们选择激光帧$F_{i+1}$作为关键帧。新保存的关键帧$F_{i+1}$与因子图中的新机器人状态节点$x_{i+1}$相关联。两个关键帧之间的激光帧被丢弃。这样添加关键帧不仅在地图密度和内存消耗之间达到平衡，而且有助于维持一个相对稀疏的因子图，这适合实时非线性优化。 
+在我们的工作中，添加新关键帧的位置和旋转变化阈值分别选择为1米和10°。 
 
 假设我们想要向因子图添加一个新状态节点$x_{i+1}$。与此状态相关联的激光关键帧是$F_{i+1}$。生成激光测距仪因子的步骤如下: 
 
-1). 用于体素地图的子关键帧:我们实现滑动窗口方法来创建包含固定数量最近激光扫描的点云地图。不是优化两个连续激光扫描之间的变换,我们提取n个最近的关键帧,我们称之为子关键帧,用于估计。子关键帧集合 $\{F_{i−n}, ..., F_i\}$ 然后使用与之关联的变换 $\{T_{i−n}, ..., T_i\}$ 转换到W框架。转换后的子关键帧合并到体素地图$M_i$中。由于我们在前面的特征提取步骤中提取两种类型的特征,$M_i$由两个子体素地图组成,表示为${M^e_i}$,边缘特征体素地图,和${M^p_i}$,平面特征体素地图。激光帧和体素地图之间的关系如下:
-
-$${M}_{i}=\{{M}_{i}^{e}, {M}_{i}^{p}\} \\
-\text { 其中 }:{M}_{i}^{e}='F_{i}^{e} \cup'{F}_{i-1}^{e} \cup \ldots \cup '{F}_{i-n}^{e} \\ 
+1). 用于体素地图的子关键帧:我们实现滑动窗口方法来创建包含固定数量最近激光扫描的点云地图。不是优化两个连续激光扫描之间的变换，我们提取n个最近的关键帧，我们称之为子关键帧，用于估计。子关键帧集合 $\{F_{i−n}， ...， F_i\}$ 然后使用与之关联的变换 $\{T_{i−n}， ...， T_i\}$ 转换到W框架。转换后的子关键帧合并到体素地图$M_i$中。由于我们在前面的特征提取步骤中提取两种类型的特征，$M_i$由两个子体素地图组成，表示为${M^e_i}$，边缘特征体素地图，和${M^p_i}$，平面特征体素地图。激光帧和体素地图之间的关系如下:
+$${M}_{i}={M_{i}^{e}， {M}_{i}^{p}} $$
+其中  
+$$
+{M}_{i}^{e}='F_{i}^{e} \cup'{F}_{i-1}^{e} \cup \ldots \cup '{F}_{i-n}^{e} 
+$$
+$$
 {M}_{i}^{p} = '{F}_{i}^{p} \cup '{F}_{i-1}^{p} \cup \ldots \cup '{F}_{i-n}^{p} 
 $$ 
 
-$‘F^e_i$和$‘F^p_i$是W中的转换后的边缘和平面特征。${M}_{i}^{e}$和${M}_{i}^{p}$然后下采样以消除落在同一个体素单元中的重复特征。在本文中,n被选择为25。${M}_{i}^{e}$和${M}_{i}^{p}$的下采样分辨率分别为0.2米和0.4米。 
+$‘F^e_i$ 和 $‘F^p_i$ 是W中的转换后的边缘和平面特征。${M}_{i}^{e}$ 和 ${M}_{i}^{p}$ 然后下采样以消除落在同一个体素单元中的重复特征。在本文中，n被选择为25。 ${M}_{i}^{e}$ 和 ${M}_{i}^{p}$ 的下采样分辨率分别为0.2米和0.4米。 
 
-2). 扫描匹配:我们通过扫描匹配将新获得的激光帧$F_{i+1}$,也是$\{F^e_{i+1}, F^p_{i+1}\}$,与$M_i$匹配。可以利用各种扫描匹配方法,如[3]和[4]来完成此目的。这里我们选择[1]中的方法,因为其计算效率高和在各种困难环境下的鲁棒性。 
-我们首先将$\{F^e_{i+1}, F^p_{i+1}\}$从B转换到W,得到$\{‘F^e_{i+1}, ‘F^p_{i+1}\}$。这个初始变换是使用来自IMU的预测机器人运动$\widetilde{T}_{i+1}$得到的。对于$‘F^e_{i+1}$或$‘F^p_{i+1}$中的每个特征,我们然后在${M}_{i}^{e}$或${M}_{i}^{p}$中找到其边缘或平面对应项。为了简洁起见,这里省略了找到这些对应项的详细步骤,但在[1]中有详细描述。
+2). 扫描匹配:我们通过扫描匹配将新获得的激光帧$F_{i+1}$，也是$\{F^e_{i+1}， F^p_{i+1}\}$，与$M_i$匹配。可以利用各种扫描匹配方法，如[3]和[4]来完成此目的。这里我们选择[1]中的方法，因为其计算效率高和在各种困难环境下的鲁棒性。 
+我们首先将$\{F^e_{i+1}， F^p_{i+1}\}$从B转换到W，得到$\{‘F^e_{i+1}， ‘F^p_{i+1}\}$。这个初始变换是使用来自IMU的预测机器人运动$\widetilde{T}_{i+1}$得到的。对于$‘F^e_{i+1}$或$‘F^p_{i+1}$中的每个特征，我们然后在${M}_{i}^{e}$或${M}_{i}^{p}$中找到其边缘或平面对应项。为了简洁起见，这里省略了找到这些对应项的详细步骤，但在[1]中有详细描述。
 
 3)相对变换:特征与其边缘或平面补丁对应物之间的距离可以使用以下公式计算: 
 
@@ -112,45 +138,45 @@ d_{p_k} = \frac
 (11)
 $$
 
-where k, u, v, and w are the feature indices in the ircorresponding sets. For an edge feature $p^e_{i+1,k}$ in $′F^e_{i+1}$, $p^e_{i,u}$ and $p^e_{i,v}$ are the points that form the corresponding edge line in $M^e_i$. For a planar feature $p^p_{i+1,k}$ in $′F^p_{i+1}, p^p_{i,u}, p^p_{i,v},and p^p_{i,w}$ form the corresponding planar patch in $M^p_i$ . The GaussNewton method is then used to solve for the optimal transformation by minimizing:
+where k， u， v， and w are the feature indices in the ircorresponding sets. For an edge feature $p^e_{i+1，k}$ in $′F^e_{i+1}$， $p^e_{i，u}$ and $p^e_{i，v}$ are the points that form the corresponding edge line in $M^e_i$. For a planar feature $p^p_{i+1，k}$ in $′F^p_{i+1}， p^p_{i，u}， p^p_{i，v}，and p^p_{i，w}$ form the corresponding planar patch in $M^p_i$ . The GaussNewton method is then used to solve for the optimal transformation by minimizing:
 
 $$
 \min_{T_{i+1}} 
 \left \{ 
-    \sum_{ {p^e_{i+1,k}} \in {′F^e_{i+1}}} {d_{e_k}} + \sum_{ p^p_{i+1,k} \in ′F^p_{i+1}}{d_{p_k}} 
+    \sum_{ {p^e_{i+1，k}} \in {′F^e_{i+1}}} {d_{e_k}} + \sum_{ p^p_{i+1，k} \in ′F^p_{i+1}}{d_{p_k}} 
 \right \} 
 $$
 
-At last, we can obtain the relative transformation ∆Ti,i+1between xi and xi+1, which is the lidar odometry factorlinking these two poses:
+At last， we can obtain the relative transformation ∆Ti，i+1between xi and xi+1， which is the lidar odometry factorlinking these two poses:
 $$
-∆T_{i,i+1} = T^T_i T_{i+1}(12)
+∆T_{i，i+1} = T^T_i T_{i+1}(12)
 $$
 
-We note that an alternative approach to obtain $∆T_{i,i+1}$ is to transform sub-keyframes into the frame of $x_i$. In otherwords, we match $F_{i+1}$ to the voxel map that is represented inthe frame of $x_i$. In this way, the real relative transformation $∆T_{i,i+1}$ can be directly obtained. Because the transformedfeatures $′F^e_i$ and $′F^p_i$ can be reused multiple times, we insteadopt to use the approach described in Sec. III-C.1 for its computational efficiency.
+We note that an alternative approach to obtain $∆T_{i，i+1}$ is to transform sub-keyframes into the frame of $x_i$. In otherwords， we match $F_{i+1}$ to the voxel map that is represented inthe frame of $x_i$. In this way， the real relative transformation $∆T_{i，i+1}$ can be directly obtained. Because the transformedfeatures $′F^e_i$ and $′F^p_i$ can be reused multiple times， we insteadopt to use the approach described in Sec. III-C.1 for its computational efficiency.
 
 ### D. GPS Factor
 
-Though we can obtain reliable state estimation and mapping by utilizing only IMU preintegration and lidar odometryfactors, the system still suffers from drift during longduration navigation tasks. To solve this problem, we canintroduce sensors that offer absolute measurements for eliminating drift. Such sensors include an altimeter, compass, andGPS. For the purposes of illustration here, we discuss GPS,as it is widely used in real-world navigation systems.
-When we receive GPS measurements, we first transformthem to the local Cartesian coordinate frame using themethod proposed in [21]. Upon the addition of a new node tothe factor graph, we then associate a new GPS factor with thisnode. If the GPS signal is not hardware-synchronized withthe lidar frame, we interpolate among GPS measurementslinearly based on the timestamp of the lidar frame.
+Though we can obtain reliable state estimation and mapping by utilizing only IMU preintegration and lidar odometryfactors， the system still suffers from drift during longduration navigation tasks. To solve this problem， we canintroduce sensors that offer absolute measurements for eliminating drift. Such sensors include an altimeter， compass， andGPS. For the purposes of illustration here， we discuss GPS，as it is widely used in real-world navigation systems.
+When we receive GPS measurements， we first transformthem to the local Cartesian coordinate frame using themethod proposed in [21]. Upon the addition of a new node tothe factor graph， we then associate a new GPS factor with thisnode. If the GPS signal is not hardware-synchronized withthe lidar frame， we interpolate among GPS measurementslinearly based on the timestamp of the lidar frame.
 
 
 ![Fig.2](../images/2023/04/LIO-SAM-Figure2.jpg)
 
-Fig. 2: Datasets are collected on 3 platforms: (a) a custom-builthandheld device, (b) an unmanned ground vehicle - ClearpathJackal, (c) an electric boat - Duffy 21.
+Fig. 2: Datasets are collected on 3 platforms: (a) a custom-builthandheld device， (b) an unmanned ground vehicle - ClearpathJackal， (c) an electric boat - Duffy 21.
 
-We note that adding GPS factors constantly when GPSreception is available is not necessary because the drift of lidar inertial odometry grows very slowly. In practice, we onlyadd a GPS factor when the estimated position covariance islarger than the received GPS position covariance.
+We note that adding GPS factors constantly when GPSreception is available is not necessary because the drift of lidar inertial odometry grows very slowly. In practice， we onlyadd a GPS factor when the estimated position covariance islarger than the received GPS position covariance.
 
 E. Loop Closure Factor
 
-Thanks to the utilization of a factor graph, loop closurescan also be seamlessly incorporated into the proposed system, as opposed to LOAM and LIOM. For the purposes ofillustration, we describe and implement a naive but effectiveEuclidean distance-based loop closure detection approach.
-We also note that our proposed framework is compatiblewith other methods for loop closure detection, for example,[22] and [23], which generate a point cloud descriptor anduse it for place recognition.
+Thanks to the utilization of a factor graph， loop closurescan also be seamlessly incorporated into the proposed system， as opposed to LOAM and LIOM. For the purposes ofillustration， we describe and implement a naive but effectiveEuclidean distance-based loop closure detection approach.
+We also note that our proposed framework is compatiblewith other methods for loop closure detection， for example，[22] and [23]， which generate a point cloud descriptor anduse it for place recognition.
 
-When a new state xi+1 is added to the factor graph, wefirst search the graph and find the prior states that are close toxi+1 in Euclidean space. As is shown in Fig. 1, for example,x3 is one of the returned candidates. We then try to matchFi+1 to the sub-keyframes {F3−m, ..., F3, ..., F3+m} usingscan-matching. Note that Fi+1 and the past sub-keyframesare first transformed into W before scan-matching. Weobtain the relative transformation ∆T3,i+1 and add it as aloop closure factor to the graph. Throughout this paper, wechoose the index m to be 12, and the search distance forloop closures is set to be 15m from a new state xi+1.
-In practice, we find adding loop closure factors is especially useful for correcting the drift in a robot’s altitude, whenGPS is the only absolute sensor available. This is because theelevation measurement from GPS is very inaccurate - givingrise to altitude errors approaching 100m in our tests, in theabsence of loop closures.
+When a new state xi+1 is added to the factor graph， wefirst search the graph and find the prior states that are close toxi+1 in Euclidean space. As is shown in Fig. 1， for example，x3 is one of the returned candidates. We then try to matchFi+1 to the sub-keyframes {F3−m， ...， F3， ...， F3+m} usingscan-matching. Note that Fi+1 and the past sub-keyframesare first transformed into W before scan-matching. Weobtain the relative transformation ∆T3，i+1 and add it as aloop closure factor to the graph. Throughout this paper， wechoose the index m to be 12， and the search distance forloop closures is set to be 15m from a new state xi+1.
+In practice， we find adding loop closure factors is especially useful for correcting the drift in a robot’s altitude， whenGPS is the only absolute sensor available. This is because theelevation measurement from GPS is very inaccurate - givingrise to altitude errors approaching 100m in our tests， in theabsence of loop closures.
 
 IV. EXPERIMENTS
 
-We now describe a series of experiments to qualitativelyand quantitatively analyze our proposed framework. Thesensor suite used in this paper includes a Velodyne VLP16 lidar, a MicroStrain 3DM-GX5-25 IMU, and a Reach MGPS. For validation, we collected 5 different datasets acrossvarious scales, platforms and environments. These datasetsare referred to as Rotation, Walking, Campus, Park andAmsterdam, respectively. The sensor mounting platforms areshown in Fig. 2. The first three datasets were collected using a custom-built handheld device on the MIT campus. The Park
+We now describe a series of experiments to qualitativelyand quantitatively analyze our proposed framework. Thesensor suite used in this paper includes a Velodyne VLP16 lidar， a MicroStrain 3DM-GX5-25 IMU， and a Reach MGPS. For validation， we collected 5 different datasets acrossvarious scales， platforms and environments. These datasetsare referred to as Rotation， Walking， Campus， Park andAmsterdam， respectively. The sensor mounting platforms areshown in Fig. 2. The first three datasets were collected using a custom-built handheld device on the MIT campus. The Park
 
 dataset was collected in a park covered by vegetation, usingan unmanned ground vehicle (UGV) - the Clearpath Jackal.
 The last dataset, Amsterdam, was collected by mounting thesensors on a boat and cruising in the canals of Amsterdam.

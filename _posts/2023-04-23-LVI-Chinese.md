@@ -55,14 +55,18 @@ tags:
 我们为我们的VIS（视觉惯性系统）采用了[7](#7-t-qin-p-li-and-s-shen-vins-mono-a-robust-and-versatilemonocular-visual-inertial-state-estimator-ieee-transactions-onrobotics-vol-34-no-4-pp-1004–1020-2018)的Pipeline，如图2所示。使用角点检测器[20](#20-j-shi-et-al-good-features-to-track-ieee-conference-on-computervision-and-pattern-recognition-pp-593–600-1994)检测视觉特征并通过Kanade-Lucas-Tomasi算法[21](#21-b-d-lucas-t-kanade-et-al-an-iterative-image-registrationtechnique-with-an-application-to-stereo-vision-1981)进行跟踪。在VIS初始化后，我们使用视觉里程计对激光雷达帧进行配准，并获取用于特征深度估计的稀疏深度图像。系统在滑动窗口设置下执行束调整，其中系统状态 $x ∈ X$ 可以写成：
 
 $$
-x = \left[R, p, v, b \right]
+x = [R, p, v, b]
 $$
 
-$R ∈ SO \left( 3 \right)$ 是旋转矩阵，$p ∈ R^3$ 是位移向量，$v$ 是速度，$b = \left[b_{a}，b_w \right]$ 是IMU偏差。$b_a$和$b_w$分别是加速度和角速度的偏差向量。从传感器体坐标系B到世界坐标系W的变换 $T ∈ SE \left(3\right)$ 表示为 $T = \left[R|p \right]$。在接下来的几节中，我们将详细介绍如何改善VIS初始化和特征深度估计的过程。由于篇幅限制，我们将读者引用到[7]以获取更多细节，如残差的实现。
+$R ∈ SO(3)$ 是旋转矩阵，$p ∈ R^3$ 是位移向量，$v$ 是速度，$b = [b_{a}，b_w ]$ 是IMU偏差。$b_a$和$b_w$分别是加速度和角速度的偏差向量。从传感器体坐标系B到世界坐标系W的变换 $T ∈ SE(3)$ 表示为 $T = [R，p]$。在接下来的几节中，我们将详细介绍如何改善VIS初始化和特征深度估计的过程。由于篇幅限制，我们将读者引用到[7]以获取更多细节，如残差的实现。
 
 1). **初始化**：基于优化的VIO通常由于在初始化时解决高度非线性问题而导致发散。初始化的质量严重依赖于两个因素：初始传感器运动和IMU参数的准确性。在实践中，我们发现[7]在传感器行驶速度较小或恒定时常常无法初始化。这是因为当加速度激励不够大时，度量尺度不可观测。IMU参数包括缓慢变化的偏置和白噪声，影响原始加速度和角速度测量。在初始化时这些参数的良好猜测有助于优化更快地收敛。
 
-为了提高我们的VIS初始化的鲁棒性，我们利用了LIS估计的系统状态x和IMU偏置b。因为深度可以直接从激光雷达中观测到，我们首先初始化LIS并获得x和b。然后我们基于图像时间戳对它们进行插值和关联到每个图像关键帧。请注意，IMU偏置被假定在两个图像关键帧之间保持不变。最后，LIS估计的x和b被用作VIS初始化的初始猜测，这显著提高了初始化速度和鲁棒性。有关使用和不使用LIS进行VIS初始化的比较，请参见[补充视频](!https://youtu.be/8CTl07D6Ibc)。
+为了提高我们的VIS初始化的鲁棒性，我们利用了LIS估计的系统状态x和IMU偏置b。因为深度可以直接从激光雷达中观测到，我们首先初始化LIS并获得x和b。然后我们基于图像时间戳对它们进行插值和关联到每个图像关键帧。请注意，IMU偏置被假定在两个图像关键帧之间保持不变。最后，LIS估计的x和b被用作VIS初始化的初始猜测，这显著提高了初始化速度和鲁棒性。有关使用和不使用LIS进行VIS初始化的比较，请参见补充视频：
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8CTl07D6Ibc" 
+   frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
 
 2). **特征深度关联**：在VIS初始化之后，我们使用估计的视觉里程计将激光雷达帧注册到相机帧。由于现代的3D激光雷达通常产生稀疏的扫描，我们堆叠多个激光雷达帧以获取密集的深度图。为了将特征与深度值关联起来，我们首先将视觉特征和激光雷达深度点投影到以相机为中心的单位球上。然后，使用极坐标将深度点进行下采样并存储，以保持球面上的恒定密度。我们通过使用视觉特征的极坐标搜索二维K-D树来查找最近的三个球面上的深度点。最后，特征深度是由视觉特征和相机中心Oc所形成的直线长度，在笛卡尔空间中与由三个深度点形成的平面相交。该过程的可视化可以在图3（a）中找到，其中特征深度是虚线直线的长度。
 

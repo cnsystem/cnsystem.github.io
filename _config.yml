@@ -22,7 +22,8 @@ author:
 seo: 
   keyword: billyzheng,cnsystem
   description: 
+
 config:
-  js_dir:
-  img_dir:
+  js_dir: 
+  img_dir: images
   css_dir:
