@@ -64,8 +64,7 @@ $R ∈ SO(3)$ 是旋转矩阵，$p ∈ R^3$ 是位移向量，$v$ 是速度，$b
 
 为了提高我们的VIS初始化的鲁棒性，我们利用了LIS估计的系统状态x和IMU偏置b。因为深度可以直接从激光雷达中观测到，我们首先初始化LIS并获得x和b。然后我们基于图像时间戳对它们进行插值和关联到每个图像关键帧。请注意，IMU偏置被假定在两个图像关键帧之间保持不变。最后，LIS估计的x和b被用作VIS初始化的初始猜测，这显著提高了初始化速度和鲁棒性。有关使用和不使用LIS进行VIS初始化的比较，请参见补充视频：
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/8CTl07D6Ibc" 
-   frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8CTl07D6Ibc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 
 2). **特征深度关联**：在VIS初始化之后，我们使用估计的视觉里程计将激光雷达帧注册到相机帧。由于现代的3D激光雷达通常产生稀疏的扫描，我们堆叠多个激光雷达帧以获取密集的深度图。为了将特征与深度值关联起来，我们首先将视觉特征和激光雷达深度点投影到以相机为中心的单位球上。然后，使用极坐标将深度点进行下采样并存储，以保持球面上的恒定密度。我们通过使用视觉特征的极坐标搜索二维K-D树来查找最近的三个球面上的深度点。最后，特征深度是由视觉特征和相机中心Oc所形成的直线长度，在笛卡尔空间中与由三个深度点形成的平面相交。该过程的可视化可以在图3（a）中找到，其中特征深度是虚线直线的长度。

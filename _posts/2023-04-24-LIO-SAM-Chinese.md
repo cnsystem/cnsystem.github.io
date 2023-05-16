@@ -228,14 +228,10 @@ Fig. 2: Datasets are collected on 3 platforms: (a) a custom-builthandheld device
 
 图4:使用步行数据集的LOAM、LIOM和LIO-SAM的映射结果。
 
-在图4(b)中,当遇到激进的旋转时,LOAM的地图多次发散。LIOM优于LOAM。但是,其地图如图4(c)所示,在各个位置仍略有发散,且由许多模糊结构组成。因为LIOM旨在处理所有传感器测量,它仅以0.56×实时速度运行,而其他方法以实时速
+在此测试中,图4(b)中的LOAM地图在遇到激进的旋转时多次发散。LIOM优于LOAM。然而,其地图如图4(c)所示,由于不准确的点云配准,显示出许多模糊结构。LIO-SAM产生的地图与Google Earth图像一致,而无需使用GPS。
 
+此测试旨在评估当系统在SE(3)中进行激进的平移和旋转时,我们方法的性能。此数据集中遇到的最大平移和旋转速度分别为1.8 m/s和213.9°/s。在数据收集期间,用户手持图2(a)所示的传感器套件,快速穿过MIT校园(图4(a))。在此测试中,图4(b)所示的LOAM地图在遇到激进旋转时在多个位置发散。在此测试中,LIOM优于LOAM。然而,其地图如图4(c)所示,在各个位置仍略有发散,且由许多模糊结构组成。因为LIOM旨在处理所有传感器测量,它仅以0.56×实时速度运行,而其他方法以实时速度运行。最后,LIO-SAM优于两种方法,产生的地图与可用的Google Earth图像一致。
 
-
-
-Fig. 4: Mapping results of LOAM, LIOM, and LIO-SAM using the Walking dataset. The map of LOAM in (b) diverges multiple timeswhen aggressive rotation is encountered. LIOM outperforms LOAM. However, its map shows numerous blurry structures due to inaccuratepoint cloud registration. LIO-SAM produces a map that is consistent with the Google Earth imagery, without using GPS.
-
-This test is designed to evaluate the performance of ourmethod when the system undergoes aggressive translationsand rotations in SE(3). The maximum translational androtational speed encountered is this dataset is 1.8 m/s and213.9°/s respectively. During the data gathering, the userholds the sensor suite shown in Fig. 2(a) and walks quicklyacross the MIT campus (Fig. 4(a)). In this test, the map ofLOAM, shown in Fig. 4(b), diverges at multiple locationswhen aggressive rotation is encountered. LIOM outperformsLOAM in this test. However, its map, shown in Fig. 4(c),still diverges slightly in various locations and consists ofnumerous blurry structures. Because LIOM is designed toprocess all sensor measurements, it only runs at 0.56× realtime while other methods are running in real-time. Finally,LIO-SAM outperforms both methods and produces a mapthat is consistent with the available Google Earth imagery.
 
 ### C. Campus Dataset
 
@@ -247,33 +243,35 @@ TABLE II: End-to-end translation error (meters)
 |Park|121.74|34.60|36.36|2.93|0.04|
 |Amsterdam|Fail|Fail|Fail|1.21|0.17|
 
-This test is designed to show the benefits of introducingGPS and loop closure factors. In order to do this, wepurposely disable the insertion of GPS and loop closurefactors into the graph. When both GPS and loop closurefactors are disabled, our method is referred to as LIO-odom,which only utilizes IMU preintegration and lidar odometryfactors. When GPS factors are used, our method is referred toas LIO-GPS, which uses IMU preintegration, lidar odometry,and GPS factors for graph construction. LIO-SAM uses allfactors when they are available.
+此测试旨在显示引入GPS和环路闭合因子的好处。为此,我们故意禁用向图中插入GPS和环路闭合因子。当禁用GPS和环路闭合因子时,我们的方法称为LIO-odom,它仅利用IMU预积分和激光测距仪里程计因子。当使用GPS因子时,我们的方法称为LIO-GPS,它使用IMU预积分、激光测距仪里程计和GPS因子进行图构造。LIO-SAM在可用时使用所有因子。 
 
 ![Fig.5](../images/2023/04/LIO-SAM-Figure5.jpg)
 
 Fig. 5: Results of various methods using the Campus dataset thatis gathered on the MIT campus. The red dot indicates the start andend location. The trajectory direction is clock-wise. LIOM is notshown because it fails to produce meaningful results.
 
-To gather this dataset, the user walks around the MITcampus using the handheld device and returns to the sameposition. Because of the numerous buildings and trees in the mapping area, GPS reception is rarely available and inaccurate most of the time. After filtering out the inconsistent GPSmeasurements, the regions where GPS is available are shownin Fig. 5(a) as green segments. These regions correspond tothe few areas that are not surrounded by buildings or trees.
-The estimated trajectories of LOAM, LIO-odom, LIOGPS, and LIO-SAM are shown in Fig. 5(a). The results ofLIOM are not shown due to its failure to initialize properlyand produce meaningful results. As is shown, the trajectoryof LOAM drifts significantly when compared with all othermethods. Without the correction of GPS data, the trajectoryof LIO-odom begins to visibly drift at the lower right cornerof the map. With the help of GPS data, LIO-GPS can correctthe drift when it is available. However, GPS data is notavailable in the later part of the dataset. As a result, LIOGPS is unable to close the loop when the robot returnsto the start position due to drift. On the other hand, LIOSAM can eliminate the drift by adding loop closure factorsto the graph. The map of LIO-SAM is well-aligned withGoogle Earth imagery and shown in Fig. 5(b). The relativetranslational error of all methods when the robot returns tothe start is shown in Table II.
+为收集此数据集,用户使用手持设备在MIT校园内四处走动,然后返回相同的位置。由于映射区域内有许多建筑物和树木,GPS接收通常不可用,大部分时间不准确。过滤掉不一致的GPS测量后,GPS可用的区域如图5(a)中的绿色段所示。这些区域对应于不是被建筑物或树木包围的几个区域。
+
+LOAM、LIO-odom、LIOGPS和LIO-SAM的估计轨迹如图5(a)所示。由于LIOM无法适当初始化和产生有意义的结果,因此未显示LIOM的结果。如图所示,与所有其他方法相比,LOAM的轨迹明显发散。在没有GPS数据校正的情况下,LIO-odom的轨迹在地图右下角开始明显发散。在GPS数据的帮助下,LIO-GPS可以在可用时修正偏差。但是,在数据集的后续部分中,GPS数据不可用。因此,由于漂移,当机器人返回起始位置时,LIO-GPS无法闭环。另一方面,LIO-SAM可以通过向图中添加环路闭合因子来消除漂移。LIO-SAM的地图与Google Earth图像对齐良好,如图5(b)所示。当机器人返回起点时,所有方法的相对平移误差如表II所示。
 
 ### D. Park Dataset
 
-In this test, we mount the sensors on a UGV and drivethe vehicle along a forested hiking trail. The robot returnsto its initial position after 40 minutes of driving. The UGVis driven on three road surfaces: asphalt, ground covered bygrass, and dirt-covered trails. Due to its lack of suspension,the robot undergoes low amplitude but high frequency vibrations when driven on non-asphalt roads.
+![Fig.6](../images/2023/04/LIO-SAM-Figure6.jpg)
 
-To mimic a challenging mapping scenario, we only useGPS measurements when the robot is in widely open areas,which is indicated by the green segments in Fig. 6(a). Such amapping scenario is representative of a task in which a robotmust map multiple GPS-denied regions and periodicallyreturns to regions with GPS availability to correct the drift.
+Fig. 6: Results of various methods using the Park dataset that isgathered in Pleasant Valley Park, New Jersey. The red dot indicatesthe start and end location. The trajectory direction is clock-wise.
 
-Similar to the results in the previous tests, LOAM, LIOM,and LIO-odom suffer from significant drift, since no absolutecorrection data is available. Additionally, LIOM only runs at 0.67× real-time, while the other methods run in real-time.
+在此测试中,我们将传感器安装在UGV上,驱动车辆沿森林徒步小道行驶。机器人在行驶40分钟后返回其初始位置。UGV在三种道路表面上驾驶:沥青路面、草地覆盖的地面和覆盖着泥土的小道。由于缺乏悬架,当在非沥青道路上行驶时,机器人会遭受低幅度但高频率的振动。
+为模拟具有挑战性的映射场景,我们仅在机器人位于开阔地区时使用GPS测量,如图6(a)中的绿色段所示。这样的映射场景代表机器人必须映射多个GPS否定区域的任务,并定期返回GPS可用区域以纠正漂移。
 
-Though the trajectories of LIO-GPS and LIO-SAM coincidein the horizontal plane, their relative translational errors aredifferent (Table II). Because no reliable absolute elevationmeasurements are available, LIO-GPS suffers from drift inaltitude and is unable to close the loop when returning tothe robot’s initial position. LIO-SAM has no such problem,as it utilizes loop closure factors to eliminate the drift.
+与前面的测试结果类似,LOAM、LIOM和LIO-odom由于没有绝对校正数据而遭受显着漂移。此外,LIOM仅以0.67×实时速度运行,而其他方法以实时速度运行。
+虽然LIO-GPS和LIO-SAM的轨迹在水平面上重合,但它们的相对平移误差不同(表II)。因为没有可靠的绝对高度测量,LIO-GPS在高度上遭受漂移,并且无法在返回机器人的初始位置时闭合环路。LIO-SAM没有此类问题,因为它利用环路闭合因子消除漂移。
 
 ### E. Amsterdam Dataset
 
-Finally, we mounted the sensor suite on a boat and cruisedalong the canals of Amsterdam for 3 hours. Although themovement of the sensors is relatively smooth in this test,mapping the canals is still challenging for several reasons.
+最后,我们在船上安装传感器套件,并在阿姆斯特丹的运河上巡航3个小时。虽然在此测试中传感器的运动相对平稳,但映射运河仍然具有挑战性,有几个原因。
 
-Many bridges over the canals pose degenerate scenarios, asthere are few useful features when the boat is under them,similar to moving through a long, featureless corridor. Thenumber of planar features is also significantly less, as theground is not present. We observe many false detections fromthe lidar when direct sunlight is in the sensor field-of-view,which occurs about 20% of the time during data gathering.
-We also only obtain intermittent GPS reception due to thepresence of bridges and city buildings overhead.
+许多桥梁跨越运河,形成退化情景,因为当船在它们下方时几乎没有有用的特征,类似于移动通过一条长长的、没有特征的走廊。由于没有地面,平面特征的数量也显著减少。当直接阳光在传感器视野内时,我们观察到激光雷达的许多错误检测,这在数据收集期间约占20%的时间。我们也因上方的桥梁和城市建筑物而只获得间歇性的GPS接收。
 
-Due to these challenges, LOAM, LIOM, and LIO-odomall fail to produce meaningful results in this test. Similarto the problems encountered in the Park dataset, LIO-GPSis unable to close the loop when returning to the robot’sinitial position because of the drift in altitude, which furthermotivates our usage of loop closure factors in LIO-SAM.
+由于这些挑战,LOAM、LIOM和LIO-odom在此测试中都无法产生有意义的结果。与公园数据集中遇到的问题类似,LIO-GPS由于高度漂移而无法在返回机器人的起始位置时闭环,这进一步激发我们在LIO-SAM中使用环路闭合因子。 
 
 ### F. Benchmarking Results
 
@@ -283,15 +281,13 @@ TABLE III: RMSE translation error w.r.t GPS
 |-------|----|----|--------|-------|-------|
 |Park|47.31|28.96|23.96|1.09|0.96|
 
-Since full GPS coverage is only available in the Parkdataset, we show the root mean square error (RMSE) resultsw.r.t to the GPS measurement history, which is treated as ground truth. This RMSE error does not take the error alongthe z axis into account. As is shown in Table III, LIO-GPSand LIO-SAM achieve similar RMSE error with respect tothe GPS ground truth. Note that we could further reduce theerror of these two methods by at least an order of magnitude by giving them full access to all GPS measurements.
+由于仅在公园数据集中获得全面GPS覆盖,我们显示相对于GPS测量历史的均方根误差(RMSE)结果,将其视为真实值。此RMSE误差不考虑z轴上的误差。如表III所示,LIO-GPS和LIO-SAM与GPS真值取得相似的RMSE误差。注意,如果我们向这两种方法提供完全访问所有GPS测量,则可以进一步将这两种方法的误差降低至少一个数量级。
 
-However, full GPS access is not always available in manymapping settings. Our intention is to design a robust systemthat can operate in a variety of challenging environments.
+然而,在许多映射设置中并非始终可获得完全的GPS访问权限。我们的意图是设计一个鲁棒的系统,可以在各种具有挑战性的环境中运行。
 
-The average runtime for the three competing methods toregister one lidar frame across all five datasets is shownin Table IV. Throughout all tests, LOAM and LIO-SAMare forced to run in real-time. In other words, some lidarframes are dropped if the runtime takes more than 100mswhen the lidar rotation rate is 10Hz. LIOM is given infinitetime to process every lidar frame. As is shown, LIO-SAMuses significantly less runtime than the other two methods,which makes it more suitable to be deployed on low-power embedded systems.
+表IV显示了三种竞争方法在所有五个数据集中注册一个激光雷达帧的平均运行时间。在所有测试中,LOAM和LIO-SAM被迫实时运行。换句话说,如果运行时间超过100ms,而激光雷达的旋转速率为10Hz,则会丢弃一些激光雷达帧。LIOM获得无限时间来处理每个激光雷达帧。如表所示,LIO-SAM的运行时间明显少于其他两种方法,这使其更适合部署在低功耗嵌入式系统上。 
 
-![Fig.6](../images/2023/04/LIO-SAM-Figure6.jpg)
 
-Fig. 6: Results of various methods using the Park dataset that isgathered in Pleasant Valley Park, New Jersey. The red dot indicatesthe start and end location. The trajectory direction is clock-wise.
 
 TABLE IV: Runtime of mapping for processing one scan (ms)
 
@@ -303,12 +299,11 @@ TABLE IV: Runtime of mapping for processing one scan (ms)
 |Park|266.4|245.2|100.5|9×|
 |Amsterdam|Fail|Fail|79.31|1×|
 
-We also perform stress tests on LIO-SAM by feeding itthe data faster than real-time. The maximum data playbackspeed is recorded and shown in the last column of TableIV when LIO-SAM achieves similar performance withoutfailure compared with the results when the data playbackspeed is 1× real-time. As is shown, LIO-SAM is able toprocess data faster than real-time up to 13×.
+们还通过以超过实时的速度向LIO-SAM提供数据来对其进行压力测试。当LIO-SAM与数据回放速度为1×实时时的结果相比,在没有故障的情况下达到相似的性能时,记录最大数据回放速度,并在表IV的最后一列中显示。如表所示,LIO-SAM能够以高达13×的速度处理数据超过实时。
 
-We note that the runtime of LIO-SAM is more significantly influenced by the density of the feature map, andless affected by the number of nodes and factors in thefactor graph. For instance, the Park dataset is collected ina feature-rich environment where the vegetation results in alarge quantity of features, whereas the Amsterdam datasetyields a sparser feature map. While the factor graph of thePark test consists of 4,573 nodes and 9,365 factors, the graphin the Amsterdam test has 23,304 nodes and 49,617 factors.
+我们注意到,LIO-SAM的运行时间更大程度上受特征图的密度影响,而不是因子图中的节点数和因子数的影响。例如,公园数据集是在特征丰富的环境中收集的,植被导致大量特征,而阿姆斯特丹数据集产生更稀疏的特征图。虽然公园测试的因子图由4,573个节点和9,365个因子组成,但阿姆斯特丹测试的图由23,304个节点和49,617个因子组成。 
 
-Despite this, LIO-SAM uses less time in the Amsterdam test
-as opposed to the runtime in the Park test.
+尽管如此,LIO-SAM在阿姆斯特丹测试中使用的时间少于在公园测试中的运行时间。
 
 ![Fig.7](../images/2023/04/LIO-SAM-Figure7.jpg)
 
@@ -317,8 +312,7 @@ Fig. 7: Map of LIO-SAM aligned with Google Earth.
 
 ## V. CONCLUSIONS AND DISCUSSION
 
-We have proposed LIO-SAM, a framework for tightlycoupled lidar inertial odometry via smoothing and mapping,for performing real-time state estimation and mapping incomplex environments. By formulating lidar-inertial odometry atop a factor graph, LIO-SAM is especially suitablefor multi-sensor fusion. Additional sensor measurements caneasily be incorporated into the framework as new factors.
-Sensors that provide absolute measurements, such as a GPS,compass, or altimeter, can be used to eliminate the drift oflidar inertial odometry that accumulates over long durations,or in feature-poor environments. Place recognition can alsobe easily incorporated into the system. To improve thereal-time performance of the system, we propose a slidingwindow approach that marginalizes old lidar frames for scanmatching. Keyframes are selectively added to the factorgraph, and new keyframes are registered only to a fixedsize set of sub-keyframes when both lidar odometry andloop closure factors are generated. This scan-matching ata local scale rather than a global scale facilitates the realtime performance of the LIO-SAM framework. The proposedmethod is thoroughly evaluated on datasets gathered on threeplatforms across a variety of environments. The results showthat LIO-SAM can achieve similar or better accuracy whencompared with LOAM and LIOM. Future work involvestesting the proposed system on unmanned aerial vehicles.
+我们提出了LIO-SAM,一种通过平滑和映射进行紧密耦合的激光惯性里程计框架,用于在复杂环境中进行实时状态估计和映射。通过在因子图上形式化激光惯性里程计,LIO-SAM特别适合多传感器融合。附加的传感器测量可以轻易地作为新因子并入框架。提供绝对测量的传感器,如GPS、磁罗盘或高度表,可以用于消除长时间积累的或在特征贫乏环境中的激光惯性里程计的漂移。场景识别也可以轻易地并入系统。为改进系统的实时性能,我们提出了滑动窗口方法,该方法边缘化旧的激光雷达帧以进行扫描匹配。关键帧被选择添加到因子图中,并且仅当生成激光里程计和环路闭合因子时,才将新关键帧注册到固定大小的子关键帧集。这种在局部范围内而不是全局范围内进行的扫描匹配有助于LIO-SAM框架的实时性能。该提出的方法在各种环境下收集的数据集上进行了全面评估。结果表明,与LOAM和LIOM相比,LIO-SAM可以达到相似或更高的精度。未来的工作涉及在无人机上测试提出的系统。
 
 ## REFERENCES
 
